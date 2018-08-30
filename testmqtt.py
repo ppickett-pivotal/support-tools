@@ -8,8 +8,8 @@ import paho.mqtt.client as mqtt
 #
 # This script will run tests connecting to a "local" RabbitMQ node with the rabbitmq_web_mqtt plugin
 # enabled and configured. It will also connect to test.mosquitto.org. For the encrypted tests using TLS,
-# the CA Cert from the RabbitMQ instance and/or from test.mosquitto.org needs to be in the same directory
-# as this script.
+# the CA Cert from the RabbitMQ instance and/or from test.mosquitto.org can be in the same directory
+# as this script. The commented out lines can then be uncommented for extra validation of the server.
 #
 # This script requires python3 (download: https://www.python.org/downloads/) and the Eclipse MQTT Python
 # client library, paho-mqtt (download and install with "pip3 install paho-mqtt").
@@ -137,8 +137,10 @@ if ws:
     client.ws_set_options(path="{}?{}".format("/ws", ""), headers=headers)
 
 if tls:
-    client.tls_set(ca_certs=cacert, certfile=None, keyfile=None, cert_reqs=ssl.CERT_REQUIRED,
+    client.tls_set(ca_certs=None, certfile=None, keyfile=None, cert_reqs=ssl.CERT_NONE,
         tls_version=ssl.PROTOCOL_TLS, ciphers=None)
+#    client.tls_set(ca_certs=cacert, certfile=None, keyfile=None, cert_reqs=ssl.CERT_REQUIRED,
+#        tls_version=ssl.PROTOCOL_TLS, ciphers=None)
 
 print(f'Connecting to {host} on port {port} with CA cert "{cacert}"')
 
@@ -149,4 +151,3 @@ client.connect(host, port, 60)
 # Other loop*() functions are available that give a threaded interface and a
 # manual interface.
 client.loop_forever()
-
